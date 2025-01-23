@@ -1,15 +1,23 @@
 import React from "react";
-import "./App.css";
-import NavBar from "./components/Navbar";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { UserProvider } from "./Views/UserContext";
+import Navbar from "./components/Navbar";
+import RegisterPage from "./Views/RegisterPage";
+import LoginPage from "./Views/LoginPage";
 import Home from "./components/Home";
 import Footer from "./components/Footer";
+
 const App = () => {
   return (
-    <>
-      <NavBar />
+    <UserProvider>
+      <Router>
+        <Navbar />
+      </Router>
+      <RegisterPage />
+      <LoginPage />
       <Home />
       <Footer />
-    </>
+    </UserProvider>
   );
 };
 
