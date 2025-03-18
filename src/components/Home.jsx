@@ -1,4 +1,4 @@
-import React from "react";
+/* import React from "react";
 import Header from "./Header";
 import CardPizza from "./CardPizza";
 import { Container, Row, Col } from "react-bootstrap";
@@ -36,6 +36,48 @@ const Home = () => {
             </Col>
           ))}
         </Row>
+      </Container>
+    </>
+  );
+};
+
+export default Home;
+ */
+
+import React, { useEffect, useState } from "react";
+import Header from "./Header";
+import CardPizza from "./CardPizza";
+import { Container, Row, Col } from "react-bootstrap";
+import { fetchData } from "../utils/fetch";
+import Error from "../components/error/Error";
+
+const Home = () => {
+  const [pizzas, setPizzas] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchData({
+      data: { endpoint: "http://localhost:5001/api/pizzas" },
+      callback: setPizzas,
+      errorCallback: setError,
+    });
+  }, []);
+
+  return (
+    <>
+      <Header />
+      <Container fluid className="mt-4">
+        {error ? (
+          <Error error={error} />
+        ) : (
+          <Row>
+            {pizzas.map((pizza, index) => (
+              <Col md={4} key={index}>
+                <CardPizza {...pizza} />
+              </Col>
+            ))}
+          </Row>
+        )}
       </Container>
     </>
   );

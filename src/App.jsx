@@ -6,6 +6,7 @@ import RegisterPage from "./Views/RegisterPage";
 import LoginPage from "./Views/LoginPage";
 import Home from "./components/Home";
 import Footer from "./components/Footer";
+import Pizza from "./Views/pizza/Pizza.jsx";
 
 const App = () => {
   return (
@@ -13,9 +14,10 @@ const App = () => {
       <Router>
         <Navbar />
       </Router>
-      <RegisterPage />
-      <LoginPage />
-      <Home />
+      {/*       <RegisterPage />
+      <LoginPage /> */}
+      {/*       <Home /> */}
+      <Pizza />
       <Footer />
     </UserProvider>
   );
