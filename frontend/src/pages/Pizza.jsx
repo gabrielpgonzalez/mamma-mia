@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 
-// const API_DETAIL = "/api/pizzas/p001";
-
-const API_DETAIL = "http://localhost:5000/api/pizzas/p001";
+const API_DETAIL = "http://localhost:5001/api/pizzas/p001";
 
 const Pizza = () => {
   const [pizza, setPizza] = useState(null);
@@ -10,20 +8,18 @@ const Pizza = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchPizza = async () => {
+    (async () => {
       try {
         const res = await fetch(API_DETAIL);
-        if (!res.ok) throw new Error(`HTTP ${res.status} al cargar pizza`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         setPizza(data);
-      } catch (err) {
-        console.error("Error cargando pizza:", err);
-        setError(err.message || "Error desconocido");
+      } catch (e) {
+        setError(e.message);
       } finally {
         setLoading(false);
       }
-    };
-    fetchPizza();
+    })();
   }, []);
 
   if (loading) return <p className="text-center my-5">Cargando pizza...</p>;
@@ -39,7 +35,7 @@ const Pizza = () => {
         </div>
         <div className="col-12 col-md-6">
           <h2 className="mb-3">{pizza.name}</h2>
-          <p className="text-muted">{pizza.desc}</p>
+          <p className="text-muted">{pizza.desc /* o pizza.description */}</p>
           <h4 className="mt-3">Ingredientes</h4>
           <ul>
             {pizza.ingredients?.map((ing, i) => (
@@ -55,5 +51,4 @@ const Pizza = () => {
     </div>
   );
 };
-
 export default Pizza;

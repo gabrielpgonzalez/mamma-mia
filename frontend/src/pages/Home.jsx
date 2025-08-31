@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import CardPizza from "../components/CardPizza";
 
-const API_URL = "http://localhost:5000/api/pizzas";
+const API_URL = "http://localhost:5001/api/pizzas";
 
 const Home = ({ addToCart }) => {
   const [pizzas, setPizzas] = useState([]);
@@ -10,19 +10,18 @@ const Home = ({ addToCart }) => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchPizzas = async () => {
+    (async () => {
       try {
         const res = await fetch(API_URL);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         setPizzas(data);
-      } catch (err) {
-        setError(err.message);
+      } catch (e) {
+        setError(e.message);
       } finally {
         setLoading(false);
       }
-    };
-    fetchPizzas();
+    })();
   }, []);
 
   if (loading) return <p className="text-center my-5">Cargando pizzas...</p>;
@@ -38,7 +37,7 @@ const Home = ({ addToCart }) => {
             key={pz.id}
             name={pz.name}
             price={pz.price}
-            ingredients={pz.ingredients}
+            ingredients={pz.ingredients ?? []}
             img={pz.img}
             onAdd={() => addToCart(pz)}
           />
@@ -47,5 +46,4 @@ const Home = ({ addToCart }) => {
     </div>
   );
 };
-
 export default Home;

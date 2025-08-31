@@ -46,5 +46,4 @@ const Cart = ({ cart, increase, decrease }) => {
     </div>
   );
 };
-
 export default Cart;

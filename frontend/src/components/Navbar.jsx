@@ -1,56 +1,46 @@
-const Navbar = ({ onNavigate = () => {}, cart = [] }) => {
+import { Link, NavLink } from "react-router-dom";
+
+const Navbar = ({ cart = [] }) => {
   const token = false;
-  const total = cart.reduce((acc, p) => acc + p.price * (p.quantity || 0), 0);
+  const total = Array.isArray(cart)
+    ? cart.reduce((acc, p) => acc + (p.price || 0) * (p.quantity || 0), 0)
+    : 0;
+
+  const linkClass = ({ isActive }) =>
+    "btn btn-outline-light" + (isActive ? " active" : "");
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
       <div className="container-fluid">
-        <a
-          className="navbar-brand"
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            onNavigate("home");
-          }}
-        >
+        {/* Logo -> Home */}
+        <Link className="navbar-brand" to="/">
           🍕 Mamma Mía
-        </a>
+        </Link>
 
         <div className="d-flex gap-2">
-          <button
-            className="btn btn-outline-light"
-            onClick={() => onNavigate("home")}
-          >
+          <NavLink className={linkClass} to="/">
             🍕 Home
-          </button>
-          <button
-            className="btn btn-outline-light"
-            onClick={() => onNavigate("cart")}
-          >
-            🛒 Total: ${total.toLocaleString("es-CL")}
-          </button>
+          </NavLink>
+          <NavLink className={linkClass} to="/profile">
+            🔓 Profile
+          </NavLink>
 
           {token ? (
-            <>
-              <button className="btn btn-outline-light">🔓 Profile</button>
-              <button className="btn btn-outline-light">🔒 Logout</button>
-            </>
+            <button className="btn btn-outline-light">🔒 Logout</button>
           ) : (
             <>
-              <button
-                className="btn btn-outline-light"
-                onClick={() => onNavigate("login")}
-              >
+              <NavLink className={linkClass} to="/login">
                 🔐 Login
-              </button>
-              <button
-                className="btn btn-outline-light"
-                onClick={() => onNavigate("register")}
-              >
+              </NavLink>
+              <NavLink className={linkClass} to="/register">
                 🔐 Register
-              </button>
+              </NavLink>
             </>
           )}
+
+          <NavLink className={linkClass} to="/cart">
+            🛒 Total: ${total.toLocaleString("es-CL")}
+          </NavLink>
         </div>
       </div>
     </nav>
