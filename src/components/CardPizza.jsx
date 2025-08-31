@@ -1,4 +1,4 @@
-const CardPizza = ({ name, price, ingredients, img }) => {
+const CardPizza = ({ name, price, ingredients, img, onAdd }) => {
   return (
     <div className="card shadow-sm" style={{ width: "18rem" }}>
       <img src={img} className="card-img-top" alt={name} />
@@ -15,7 +15,9 @@ const CardPizza = ({ name, price, ingredients, img }) => {
         <p className="fw-bold">Precio: ${price.toLocaleString("es-CL")}</p>
         <div className="d-flex justify-content-between">
           <button className="btn btn-outline-primary">Ver más 👀</button>
-          <button className="btn btn-dark">Añadir 🛒</button>
+          <button className="btn btn-dark" onClick={onAdd}>
+            Añadir 🛒
+          </button>
         </div>
       </div>
     </div>

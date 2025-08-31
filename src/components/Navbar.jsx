@@ -1,6 +1,7 @@
-const Navbar = ({ onNavigate }) => {
-  const total = 25000;
+const Navbar = ({ onNavigate, cart }) => {
   const token = false;
+
+  const total = cart.reduce((acc, p) => acc + p.price * (p.quantity || 0), 0);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
@@ -16,7 +17,10 @@ const Navbar = ({ onNavigate }) => {
           >
             🍕 Home
           </button>
-          <button className="btn btn-outline-light">
+          <button
+            className="btn btn-outline-light"
+            onClick={() => onNavigate("cart")}
+          >
             🛒 Total: ${total.toLocaleString("es-CL")}
           </button>
 
