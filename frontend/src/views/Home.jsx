@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import CardPizza from "../components/CardPizza";
 
-const API_URL = "http://localhost:5001/api/pizzas";
+const API_URL = "http://localhost:5000/api/pizzas";
 
 const Home = ({ addToCart }) => {
   const [pizzas, setPizzas] = useState([]);

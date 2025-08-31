@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 // const API_DETAIL = "/api/pizzas/p001";
 
-const API_DETAIL = "http://localhost:5001/api/pizzas/p001";
+const API_DETAIL = "http://localhost:5000/api/pizzas/p001";
 
 const Pizza = () => {
   const [pizza, setPizza] = useState(null);
