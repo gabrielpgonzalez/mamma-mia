@@ -1,4 +1,4 @@
-const Navbar = () => {
+const Navbar = ({ onNavigate }) => {
   const total = 25000;
   const token = false;
 
@@ -10,7 +10,12 @@ const Navbar = () => {
         </a>
 
         <div className="d-flex gap-2">
-          <button className="btn btn-outline-light">🍕 Home</button>
+          <button
+            className="btn btn-outline-light"
+            onClick={() => onNavigate("home")}
+          >
+            🍕 Home
+          </button>
           <button className="btn btn-outline-light">
             🛒 Total: ${total.toLocaleString("es-CL")}
           </button>
@@ -22,8 +27,18 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <button className="btn btn-outline-light">🔐 Login</button>
-              <button className="btn btn-outline-light">🔐 Register</button>
+              <button
+                className="btn btn-outline-light"
+                onClick={() => onNavigate("login")}
+              >
+                🔐 Login
+              </button>
+              <button
+                className="btn btn-outline-light"
+                onClick={() => onNavigate("register")}
+              >
+                🔐 Register
+              </button>
             </>
           )}
         </div>
