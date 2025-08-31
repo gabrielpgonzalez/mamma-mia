@@ -1,8 +1,9 @@
+// src/pages/Pizza.jsx
 import { useEffect, useState } from "react";
 
-const API_DETAIL = "http://localhost:5001/api/pizzas/p001";
+const API_DETAIL = "http://localhost:5001/api/pizzas/p001"; // o "/api/..." si usas proxy
 
-const Pizza = () => {
+const Pizza = ({ addToCart }) => {
   const [pizza, setPizza] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -13,7 +14,7 @@ const Pizza = () => {
         const res = await fetch(API_DETAIL);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        setPizza(data);
+        setPizza(data); // <- objeto pizza completo (id, name, price, img, etc.)
       } catch (e) {
         setError(e.message);
       } finally {
@@ -45,10 +46,18 @@ const Pizza = () => {
           <h3 className="mt-3">
             Precio: ${pizza.price?.toLocaleString("es-CL")}
           </h3>
-          <button className="btn btn-dark mt-3">Añadir 🛒</button>
+
+          {/* 🔽 aquí sumamos al carrito global usando el objeto pizza */}
+          <button
+            className="btn btn-dark mt-3"
+            onClick={() => addToCart(pizza)}
+          >
+            Añadir 🛒
+          </button>
         </div>
       </div>
     </div>
   );
 };
+
 export default Pizza;

@@ -1,3 +1,4 @@
+// src/App.jsx
 import { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -17,8 +18,8 @@ export default function App() {
 
   const addToCart = (pizza) => {
     setCart((prev) => {
-      const f = prev.find((p) => p.id === pizza.id);
-      return f
+      const found = prev.find((p) => p.id === pizza.id);
+      return found
         ? prev.map((p) =>
             p.id === pizza.id ? { ...p, quantity: p.quantity + 1 } : p
           )
@@ -51,7 +52,11 @@ export default function App() {
                 <Cart cart={cart} increase={increase} decrease={decrease} />
               }
             />
-            <Route path="/pizza/p001" element={<Pizza />} />
+            {/* aquí pasamos addToCart a Pizza */}
+            <Route
+              path="/pizza/p001"
+              element={<Pizza addToCart={addToCart} />}
+            />
             <Route path="/profile" element={<Profile />} />
             <Route path="/404" element={<NotFound />} />
             <Route path="*" element={<Navigate to="/404" replace />} />
