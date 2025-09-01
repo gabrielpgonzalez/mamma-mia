@@ -2,9 +2,11 @@ import { useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useCart } from "../hooks/useCart";
 import { currency } from "../utils/currency";
+import { UserProvider, useUser } from "../context/UserContext.jsx";
 
-const Navbar = ({ isAuthenticated, onLogout }) => {
+const Navbar = () => {
   const { total, count } = useCart();
+  const { token, logout } = useUser();
 
   useEffect(() => {
     const nav = document.querySelector(".navbar.fixed-top");
@@ -19,17 +21,6 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
     window.addEventListener("resize", setOffset);
     return () => window.removeEventListener("resize", setOffset);
   }, []);
-
-  const token =
-    typeof isAuthenticated === "boolean"
-      ? isAuthenticated
-      : !!localStorage.getItem("token");
-
-  const handleLogout = () => {
-    if (onLogout) onLogout();
-    else localStorage.removeItem("token");
-    window.location.href = "/";
-  };
 
   const linkClass = ({ isActive }) =>
     "btn btn-outline-light" + (isActive ? " active" : "");
@@ -54,7 +45,6 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
         </button>
 
         <div className="collapse navbar-collapse" id="mainNavbar">
-          {/* Navegación izquierda */}
           <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex gap-2">
             <li className="nav-item">
               <NavLink end to="/" className={linkClass}>
@@ -68,10 +58,9 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
             </li>
           </ul>
 
-          {/* Acciones derechas */}
           <div className="d-flex align-items-center gap-2">
             {token ? (
-              <button className="btn btn-outline-light" onClick={handleLogout}>
+              <button className="btn btn-outline-light" onClick={logout}>
                 🔒 Logout
               </button>
             ) : (
@@ -84,7 +73,6 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
                 </NavLink>
               </>
             )}
-
             <NavLink to="/cart" className={linkClass}>
               🛒 Total: {currency(total)}{" "}
               <span className="badge bg-light text-dark ms-2">{count}</span>

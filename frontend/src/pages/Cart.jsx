@@ -1,5 +1,6 @@
 import { useCart } from "../hooks/useCart";
 import { currency } from "../utils/currency";
+import { useUser } from "../context/UserContext";
 
 const Cart = () => {
   const { items, total, addItem, removeOne, removeAll, clear } = useCart();

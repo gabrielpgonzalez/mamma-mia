@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { UserProvider, useUser } from "../../context/UserContext.jsx";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
+  const [name, setName] = useState("");
+  const { login } = useUser();
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    localStorage.setItem("token", "demo-token");
-
-    window.location.href = "/";
+    login();
+    navigate("/");
   };
 
   return (
@@ -19,8 +22,18 @@ const LoginPage = () => {
         <div className="col-12 col-md-6 col-lg-4">
           <div className="card shadow-sm">
             <div className="card-body">
-              <h3 className="mb-3 text-center">Iniciar sesión</h3>
+              <h3 className="mb-3 text-center">Crear cuenta</h3>
               <form onSubmit={handleSubmit} className="d-grid gap-3">
+                <div>
+                  <label className="form-label">Nombre</label>
+                  <input
+                    className="form-control"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Tu nombre"
+                    required
+                  />
+                </div>
                 <div>
                   <label className="form-label">Email</label>
                   <input
@@ -44,11 +57,11 @@ const LoginPage = () => {
                   />
                 </div>
                 <button type="submit" className="btn btn-dark">
-                  🔐 Entrar
+                  ✨ Registrarme
                 </button>
               </form>
               <p className="mt-3 mb-0 text-center text-muted">
-                ¿No tienes cuenta? <Link to="/register">Regístrate</Link>
+                ¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link>
               </p>
             </div>
           </div>
@@ -58,4 +71,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

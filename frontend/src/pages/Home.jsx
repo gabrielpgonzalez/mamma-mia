@@ -1,49 +1,74 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import CardPizza from "../components/CardPizza";
+import { API_BASE } from "../utils/api";
 
-const API_URL = "http://localhost:5001/api/pizzas";
-
-const Home = ({ addToCart }) => {
+const Home = () => {
   const [pizzas, setPizzas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    let cancelled = false;
+
     (async () => {
       try {
-        const res = await fetch(API_URL);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        setLoading(true);
+        setError("");
+        const res = await fetch(`${API_BASE}/pizzas`);
+        if (!res.ok) throw new Error("No se pudieron cargar las pizzas");
         const data = await res.json();
-        setPizzas(data);
+        if (!cancelled) setPizzas(Array.isArray(data) ? data : []);
       } catch (e) {
-        setError(e.message);
+        if (!cancelled) setError(e.message || "Error cargando pizzas");
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  if (loading) return <p className="text-center my-5">Cargando pizzas...</p>;
-  if (error)
-    return <p className="text-center my-5 text-danger">Error: {error}</p>;
-
   return (
-    <div>
+    <>
       <Header />
-      <div className="my-5 d-flex gap-4 flex-wrap justify-content-center">
-        {pizzas.map((pz) => (
-          <CardPizza
-            key={pz.id}
-            name={pz.name}
-            price={pz.price}
-            ingredients={pz.ingredients ?? []}
-            img={pz.img}
-            onAdd={() => addToCart(pz)}
-          />
-        ))}
-      </div>
-    </div>
+
+      <section className="py-4">
+        {loading && <p className="text-center m-0">Cargando...</p>}
+
+        {!loading && error && (
+          <div className="text-center">
+            <div className="alert alert-danger d-inline-block my-3">
+              {error}
+            </div>
+          </div>
+        )}
+
+        <div className="">
+          <div className="row g-4">
+            {pizzas.map((p) => {
+              const key = p.id ?? p._id ?? p.slug ?? p.name;
+              return (
+                <div className="col-12 col-sm-6 col-lg-4" key={key}>
+                  <CardPizza pizza={p} />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {!loading && !error && pizzas.length === 0 && (
+          <div className="text-center mt-4">
+            <div className="alert alert-warning d-inline-block mb-0">
+              No hay pizzas para mostrar.
+            </div>
+          </div>
+        )}
+      </section>
+    </>
   );
 };
+
 export default Home;

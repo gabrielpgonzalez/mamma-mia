@@ -7,15 +7,14 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import Pizza from "./pages/Pizza";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
 
-const ProfilePage = () => (
-  <div className="container py-5">
-    <h2>Perfil</h2>
-    <p className="text-muted">Contenido de tu perfil (pendiente).</p>
-  </div>
-);
+import LoginPage from "./views/auth/LoginPage";
+import RegisterPage from "./views/auth/RegisterPage";
+
+import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicOnlyRoute from "./routes/PublicOnlyRoute";
 
 function App() {
   return (
@@ -27,21 +26,33 @@ function App() {
           <Route path="/pizza/:id" element={<Pizza />} />
           <Route path="/cart" element={<Cart />} />
 
-          {/* nuevas rutas */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-
-          <Route path="/home" element={<Navigate to="/" replace />} />
           <Route
-            path="*"
+            path="/profile"
             element={
-              <div className="container py-5">
-                <h2 className="mb-2">404 — Página no encontrada</h2>
-                <p className="text-muted">La ruta que ingresaste no existe.</p>
-              </div>
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
             }
           />
+          <Route
+            path="/login"
+            element={
+              <PublicOnlyRoute>
+                <LoginPage />
+              </PublicOnlyRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicOnlyRoute>
+                <RegisterPage />
+              </PublicOnlyRoute>
+            }
+          />
+
+          <Route path="/home" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />

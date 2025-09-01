@@ -85,3 +85,9 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.full-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
