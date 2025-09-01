@@ -31,7 +31,7 @@ const Home = ({ addToCart }) => {
   return (
     <div>
       <Header />
-      <div className="container my-5 d-flex gap-4 flex-wrap justify-content-center">
+      <div className="my-5 d-flex gap-4 flex-wrap justify-content-center">
         {pizzas.map((pz) => (
           <CardPizza
             key={pz.id}

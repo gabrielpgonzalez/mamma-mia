@@ -1,28 +1,26 @@
-// src/components/CardPizza.jsx
 import { Link } from "react-router-dom";
+import { useCart } from "../hooks/useCart";
+import { currency } from "../utils/currency";
 
-const CardPizza = ({ name, price, ingredients = [], img, onAdd }) => {
+const CardPizza = ({ id, name, img, price, ingredients }) => {
+  const { addItem } = useCart();
+
   return (
-    <div className="card shadow-sm" style={{ width: "18rem" }}>
+    <div className="card h-100">
       <img src={img} className="card-img-top" alt={name} />
-      <div className="card-body">
+      <div className="card-body d-flex flex-column">
         <h5 className="card-title">{name}</h5>
-        <p>
-          <strong>Ingredientes:</strong>
-        </p>
-        <ul>
-          {ingredients.map((ing, i) => (
-            <li key={i}>{ing}</li>
-          ))}
-        </ul>
-        <p className="fw-bold">Precio: ${price?.toLocaleString("es-CL")}</p>
-        <div className="d-flex justify-content-between">
-          {/* Botón Ver más que lleva a /pizza/p001 */}
-          <Link to="/pizza/p001" className="btn btn-outline-primary">
-            Ver más 👀
+        <p className="card-text">{ingredients?.join(", ")}</p>
+        <p className="mt-auto fw-bold">{currency(price)}</p>
+        <div className="d-flex gap-2">
+          <Link to={`/pizza/${id}`} className="btn btn-outline-secondary w-50">
+            Ver más
           </Link>
-          <button className="btn btn-dark" onClick={onAdd}>
-            Añadir 🛒
+          <button
+            className="btn btn-primary w-50"
+            onClick={() => addItem({ id, name, img, price })}
+          >
+            Añadir
           </button>
         </div>
       </div>
