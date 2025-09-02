@@ -1,13 +1,3 @@
-// src/utils/api.js
-
-/**
- * Base de la API.
- * Define en .env.local (raíz del proyecto) algo como:
- *   VITE_API_BASE="http://localhost:5001/api"
- * Si no está definida, cae por defecto en http://localhost:5000/api
- */
-
-// Obtiene la base desde variables de entorno de Vite (con guard por si acaso)
 const envBase =
   typeof import.meta !== "undefined" &&
   import.meta.env &&
@@ -15,35 +5,21 @@ const envBase =
     ? String(import.meta.env.VITE_API_BASE)
     : "";
 
-// 1) Definimos rawBase PRIMERO
-const rawBase = envBase || "http://localhost:5001/api";
-
-// 2) Luego exportamos API_BASE usando rawBase
+const rawBase = envBase || "http://localhost:5000/api";
 export const API_BASE = rawBase.replace(/\/+$/, "");
 
-/**
- * Une API_BASE con un path asegurando que no queden dobles slashes.
- * @param {string} path - Por ejemplo "pizzas" o "/pizzas/123"
- * @returns {string} URL completa
- */
 export const buildUrl = (path = "") => {
-  const clean = String(path).replace(/^\/+/, ""); // quita / iniciales
+  const clean = String(path).replace(/^\/+/, "");
   return `${API_BASE}/${clean}`;
 };
 
-/**
- * fetch JSON con manejo de errores y mensajes claros.
- * @param {string} path - Path relativo a la API (p.ej. "pizzas" o "pizzas/123")
- * @param {RequestInit} [options]
- * @returns {Promise<any>}
- */
+const baseHeaders = { "Content-Type": "application/json" };
+
 export const fetchJson = async (path, options) => {
   const url = buildUrl(path);
+
   const res = await fetch(url, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.headers || {}),
-    },
+    headers: { ...baseHeaders, ...(options?.headers || {}) },
     ...options,
   });
 
@@ -53,28 +29,49 @@ export const fetchJson = async (path, options) => {
       const data = await res.json();
       detail = typeof data === "string" ? data : JSON.stringify(data);
     } catch {
-      // ignore
+      try {
+        detail = await res.text();
+      } catch {}
     }
-    throw new Error(
-      `HTTP ${res.status} ${res.statusText} — ${url}${
-        detail ? ` :: ${detail}` : ""
-      }`
-    );
+    const msg = `HTTP ${res.status} ${res.statusText} — ${url}${
+      detail ? ` :: ${detail}` : ""
+    }`;
+    throw new Error(msg);
   }
 
   if (res.status === 204) return null;
-  return res.json();
+
+  try {
+    return await res.json();
+  } catch {
+    return await res.text();
+  }
 };
 
-/* ------------------ Helpers específicos de Pizzería (opcionales) ------------------ */
+export const authLogin = ({ email, password }) =>
+  fetchJson("auth/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
 
-/** GET /pizzas */
+export const authRegister = ({ email, password, name }) =>
+  fetchJson("auth/register", {
+    method: "POST",
+    body: JSON.stringify({ email, password, name }),
+  });
+
+export const authMe = (token) =>
+  fetchJson("auth/me", { headers: { Authorization: `Bearer ${token}` } });
+
+export const postCheckout = (token, cart) =>
+  fetchJson("checkouts", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ cart }),
+  });
+
 export const getPizzas = () => fetchJson("pizzas");
 
-/**
- * GET /pizzas/:id
- * @param {string|number} id
- */
 export const getPizzaById = (id) => {
   if (id === undefined || id === null || String(id).trim() === "") {
     throw new Error("ID de pizza inválido.");

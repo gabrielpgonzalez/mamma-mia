@@ -1,9 +1,35 @@
+import { useState } from "react";
 import { useCart } from "../hooks/useCart";
 import { currency } from "../utils/currency";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../context/UserContext.jsx";
+import { postCheckout } from "../utils/api";
 
 const Cart = () => {
   const { items, total, addItem, removeOne, removeAll, clear } = useCart();
+  const { token } = useUser();
+
+  const [success, setSuccess] = useState("");
+  const [sending, setSending] = useState(false);
+
+  const handleCheckout = async () => {
+    try {
+      setSending(true);
+      setSuccess("");
+
+      const cart = items.map(({ id, name, price, qty }) => ({
+        id,
+        name,
+        price,
+        qty,
+      }));
+      await postCheckout(token, cart);
+      setSuccess("✅ Compra realizada con éxito.");
+    } catch (e) {
+      alert(e.message || "Error en el checkout");
+    } finally {
+      setSending(false);
+    }
+  };
 
   if (!items.length) {
     return (
@@ -17,6 +43,7 @@ const Cart = () => {
   return (
     <div className="container py-4">
       <h2 className="mb-3">Tu carrito</h2>
+
       <div className="list-group mb-3">
         {items.map((it) => (
           <div
@@ -37,6 +64,7 @@ const Cart = () => {
               <div className="fw-semibold">{it.name}</div>
               <div className="text-muted">{currency(it.price)} c/u</div>
             </div>
+
             <div className="d-flex align-items-center gap-2">
               <button
                 className="btn btn-outline-secondary btn-sm"
@@ -70,8 +98,19 @@ const Cart = () => {
           Vaciar
         </button>
         <div className="fs-5 fw-bold">Total: {currency(total)}</div>
-        <button className="btn btn-success">Pagar</button>
+        <button
+          className="btn btn-success"
+          disabled={!token || sending}
+          title={!token ? "Inicia sesión para pagar" : undefined}
+          onClick={handleCheckout}
+        >
+          {sending ? "Procesando..." : "Pagar"}
+        </button>
       </div>
+
+      {success && (
+        <div className="alert alert-success mt-3 mb-0">{success}</div>
+      )}
     </div>
   );
 };

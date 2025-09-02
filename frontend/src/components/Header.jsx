@@ -1,9 +1,14 @@
-// src/components/Header.jsx
 const Header = () => {
   return (
     <header
-      className="text-center text-white py-5 position-relative"
+      className="text-center text-white position-relative py-5"
       style={{
+        marginTop: "calc(var(--navbar-offset, 56px) * -1)",
+
+        width: "100vw",
+        marginLeft: "calc(50% - 50vw)",
+        marginRight: "calc(50% - 50vw)",
+
         backgroundImage: "url('/img/Header.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -21,4 +26,5 @@ const Header = () => {
     </header>
   );
 };
+
 export default Header;

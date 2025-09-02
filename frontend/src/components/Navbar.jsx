@@ -2,11 +2,9 @@ import { useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useCart } from "../hooks/useCart";
 import { currency } from "../utils/currency";
-import { UserProvider, useUser } from "../context/UserContext.jsx";
 
-const Navbar = () => {
+const Navbar = ({ isAuthenticated, onLogout }) => {
   const { total, count } = useCart();
-  const { token, logout } = useUser();
 
   useEffect(() => {
     const nav = document.querySelector(".navbar.fixed-top");
@@ -21,6 +19,17 @@ const Navbar = () => {
     window.addEventListener("resize", setOffset);
     return () => window.removeEventListener("resize", setOffset);
   }, []);
+
+  const token =
+    typeof isAuthenticated === "boolean"
+      ? isAuthenticated
+      : !!localStorage.getItem("token");
+
+  const handleLogout = () => {
+    if (onLogout) onLogout();
+    else localStorage.removeItem("token");
+    window.location.href = "/";
+  };
 
   const linkClass = ({ isActive }) =>
     "btn btn-outline-light" + (isActive ? " active" : "");
@@ -60,7 +69,7 @@ const Navbar = () => {
 
           <div className="d-flex align-items-center gap-2">
             {token ? (
-              <button className="btn btn-outline-light" onClick={logout}>
+              <button className="btn btn-outline-light" onClick={handleLogout}>
                 🔒 Logout
               </button>
             ) : (
@@ -73,6 +82,7 @@ const Navbar = () => {
                 </NavLink>
               </>
             )}
+
             <NavLink to="/cart" className={linkClass}>
               🛒 Total: {currency(total)}{" "}
               <span className="badge bg-light text-dark ms-2">{count}</span>
